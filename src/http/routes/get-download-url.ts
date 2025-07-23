@@ -4,6 +4,7 @@ import { z } from "zod/v4";
 import { db } from "@/db/connection.ts";
 import { schema } from "@/db/schema/index.ts";
 import { eq } from "drizzle-orm";
+import { ClientError } from "../_errors/client-error.ts";
 
 export const getDownloadURL: FastifyPluginCallbackZod = (app) => {
   app
@@ -27,7 +28,7 @@ export const getDownloadURL: FastifyPluginCallbackZod = (app) => {
         const file = result[0]
 
         if (!file) {
-          return reply.status(404).send({ error: 'File not found' })
+          throw new ClientError('File not found.')
         }
 
         const extension = file.contentType.split('/')[1]

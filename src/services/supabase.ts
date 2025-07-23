@@ -1,4 +1,5 @@
 import { env } from "@/env.ts";
+import { ClientError } from "@/http/_errors/client-error.ts";
 import { MultipartFile } from "@fastify/multipart";
 import { createClient } from "@supabase/supabase-js";
 
@@ -25,7 +26,7 @@ export async function uploadImage(file: MultipartFile, fileKey: string): Promise
 
   if (error) {
     console.error('Error uploading image:', error);
-    throw new Error(`Failed to upload image: ${error.message}`);
+    throw new ClientError(`Failed to upload image: ${error.message}`);
   }
 
   const { data: publicURLData } = supabase.storage.from('imagepush').getPublicUrl(filePath)
@@ -44,7 +45,7 @@ export async function getPublicURLFromKeyName(keyName: string): Promise<Supabase
 
   if (error || !data) {
     console.error('Error getting public URL:', error);
-    throw new Error(`Failed to get public URL: ${error.message}`);
+    throw new ClientError(`Failed to get public URL: ${error.message}`);
   }
 
   console.log(data.signedUrl)

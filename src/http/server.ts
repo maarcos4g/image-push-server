@@ -10,6 +10,7 @@ import {
 
 import { uploadImage } from "./routes/upload-image.ts";
 import { getDownloadURL } from "./routes/get-download-url.ts";
+import { errorHandler } from "@/error-handler.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -29,6 +30,8 @@ app.get('/health', async () => {
 //routes
 app.register(uploadImage)
 app.register(getDownloadURL)
+
+app.setErrorHandler(errorHandler)
 
 app.listen({
   port: 3333,

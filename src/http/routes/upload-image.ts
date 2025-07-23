@@ -3,6 +3,7 @@ import { uploadImage as uploadFile } from "@/services/supabase.ts";
 import { db } from "@/db/connection.ts";
 import { schema } from "@/db/schema/index.ts";
 import { randomUUID } from "node:crypto";
+import { ClientError } from "../_errors/client-error.ts";
 
 export const uploadImage: FastifyPluginCallbackZod = (app) => {
   app
@@ -11,7 +12,7 @@ export const uploadImage: FastifyPluginCallbackZod = (app) => {
       const fileKey = randomUUID()
 
       if (!file) {
-        throw new Error('Image file is required')
+        throw new ClientError('Image file is required')
       }
 
       await uploadFile(file, fileKey)
@@ -24,6 +25,10 @@ export const uploadImage: FastifyPluginCallbackZod = (app) => {
           key: fileKey
         })
         .returning()
+
+        if (!result[0]) {
+          throw new ClientError('Failed to save file')
+        }
 
       const fileResponse = result[0]
 

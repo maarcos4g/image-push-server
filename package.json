@@ -8,7 +8,9 @@
     "dev": "tsx watch --env-file .env src/http/server.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx --env-file .env src/db/seed.ts"
+    "db:seed": "tsx --env-file .env src/db/seed.ts",
+    "build": "tsup",
+    "start": "node dist/http/server.js"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +30,7 @@
     "fastify": "^5.4.0",
     "fastify-type-provider-zod": "^5.0.2",
     "postgres": "^3.4.7",
+    "tsup": "^8.5.0",
     "zod": "^4.0.5"
   }
 }

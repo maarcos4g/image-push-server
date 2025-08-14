@@ -3,16 +3,35 @@ import fastifyCors from "@fastify/cors";
 import { fastifyMultipart } from "@fastify/multipart";
 
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   type ZodTypeProvider
 } from "fastify-type-provider-zod";
+
+import swagger from '@fastify/swagger'
+import scalar from '@scalar/fastify-api-reference'
 
 import { uploadImage } from "./routes/upload-image.ts";
 import { getDownloadURL } from "./routes/get-download-url.ts";
 import { errorHandler } from "@/error-handler.ts";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
+
+app.register(swagger, {
+  openapi: {
+    info: {
+      title: 'Image Push API',
+      description: 'API for uploading and retrieving images',
+      version: '1.0.0'
+    }
+  },
+  transform: jsonSchemaTransform
+})
+
+app.register(scalar, {
+  routePrefix: '/docs',
+})
 
 app.register(fastifyCors, {
   origin: '*',
@@ -23,8 +42,8 @@ app.register(fastifyMultipart)
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
-app.get('/health', async () => {
-  return 'OK!'
+app.get('/health', async (_, reply) => {
+  return reply.send({ message: 'OK' })
 })
 
 //routes

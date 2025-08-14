@@ -5,16 +5,32 @@ import { db } from "@/db/connection.ts";
 import { schema } from "@/db/schema/index.ts";
 import { eq } from "drizzle-orm";
 import { ClientError } from "../_errors/client-error.ts";
+import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+
+extendZodWithOpenApi(z)
+
+const GetDownloadURLParamSchema = z.object({
+  fileKey: z.uuid().openapi({
+    description: 'The unique identifier for the file.',
+    example: 'c7c19327-9bec-4b73-aeca-9dd317c9681c'
+  }).openapi({
+    example: 'c7c19327-9bec-4b73-aeca-9dd317c9681c'
+  })
+})
+
 
 export const getDownloadURL: FastifyPluginCallbackZod = (app) => {
   app
     .get(
-      '/url/:fileKey',
+      '/image/:fileKey',
       {
         schema: {
-          params: z.object({
-            fileKey: z.uuid()
-          })
+          summary: 'Get download URL for a file',
+          description: 'Retrieves a signed URL for downloading a file by its key.',
+          params: GetDownloadURLParamSchema.describe('Parameters for retrieving the download URL'),
+          response: {
+            301: z.null().describe('Redirects to the download URL'),
+          }
         }
       },
       async (request, reply) => {

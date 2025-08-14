@@ -48,7 +48,7 @@ export async function getPublicURLFromKeyName(keyName: string): Promise<Supabase
     throw new ClientError(`Failed to get public URL: ${error.message}`);
   }
 
-  console.log(data.signedUrl)
+  // console.log(data.signedUrl)
 
   return { downloadURL: data.signedUrl }
 }

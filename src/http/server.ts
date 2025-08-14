@@ -31,6 +31,9 @@ app.register(swagger, {
 
 app.register(scalar, {
   routePrefix: '/docs',
+  configuration: {
+    darkMode: true,
+  }
 })
 
 app.register(fastifyCors, {
